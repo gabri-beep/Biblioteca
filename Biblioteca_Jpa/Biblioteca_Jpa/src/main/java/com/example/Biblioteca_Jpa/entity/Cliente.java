@@ -1,9 +1,6 @@
 package com.example.Biblioteca_Jpa.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @Entity
 public class Cliente {
@@ -13,6 +10,9 @@ public class Cliente {
     private String nome;
     private String sobrenome;
     private String cpf;
+
+    @OneToOne(mappedBy = "cliente", cascade = CascadeType.ALL)
+    private Emprestimo emprestimo;
 
     public Cliente() {
     }

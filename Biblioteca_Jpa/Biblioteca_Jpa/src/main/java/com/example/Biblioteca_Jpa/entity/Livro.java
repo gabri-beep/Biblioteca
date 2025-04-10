@@ -1,9 +1,7 @@
 package com.example.Biblioteca_Jpa.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import jakarta.persistence.*;
 
 @Entity
 public class Livro {
@@ -12,13 +10,19 @@ public class Livro {
     private Long idLivro;
     private String nome;
     private String autor;
-    private int isbn;
+    @Column(unique = true)
+    private String isbn;
     private String genero;
+
+    @ManyToOne
+    @JoinColumn(name = "idEmprestimo", referencedColumnName = "idEmprestimo")
+    @JsonBackReference
+    private Emprestimo emprestimo;
 
     public Livro() {
     }
 
-    public Livro(Long idLivro, String nome, String autor, int isbn, String genero) {
+    public Livro(Long idLivro, String nome, String autor, String isbn, String genero) {
         this.idLivro = idLivro;
         this.nome = nome;
         this.autor = autor;
@@ -50,11 +54,11 @@ public class Livro {
         this.autor = autor;
     }
 
-    public int getIsbn() {
+    public String getIsbn() {
         return isbn;
     }
 
-    public void setIsbn(int isbn) {
+    public void setIsbn(String isbn) {
         this.isbn = isbn;
     }
 

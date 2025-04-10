@@ -1,11 +1,10 @@
 package com.example.Biblioteca_Jpa.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.*;
 
 import java.util.Date;
+import java.util.List;
 
 @Entity
 public class Emprestimo {
@@ -14,6 +13,14 @@ public class Emprestimo {
     private Long idEmprestimo;
     private Date dataInicial;
     private Date dataFinal;
+
+
+    @OneToOne
+    @JoinColumn(name = "idCliente", referencedColumnName = "idCliente")
+    private Cliente cliente;
+    @OneToMany(mappedBy = "emprestimo", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<Livro> livros;
 
     public Emprestimo() {
     }
