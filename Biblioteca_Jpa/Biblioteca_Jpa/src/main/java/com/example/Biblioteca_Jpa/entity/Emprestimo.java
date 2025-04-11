@@ -25,10 +25,12 @@ public class Emprestimo {
     public Emprestimo() {
     }
 
-    public Emprestimo(Long idEmprestimo, Date dataInicial, Date dataFinal) {
+    public Emprestimo(Long idEmprestimo, Date dataInicial, Date dataFinal, Cliente cliente, List<Livro> livros) {
         this.idEmprestimo = idEmprestimo;
         this.dataInicial = dataInicial;
         this.dataFinal = dataFinal;
+        this.cliente = cliente;
+        this.livros = livros;
     }
 
     public Long getIdEmprestimo() {
@@ -53,5 +55,21 @@ public class Emprestimo {
 
     public void setDataFinal(Date dataFinal) {
         this.dataFinal = dataFinal;
+    }
+
+    public Cliente getCliente() {
+        return cliente;
+    }
+
+    public void setCliente(Cliente cliente) {
+        this.cliente = cliente;
+    }
+
+    public List<Livro> getLivros() {
+        return livros;
+    }
+
+    public void setLivros(List<Livro> livros) {
+        this.livros = livros;
     }
 }
