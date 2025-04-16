@@ -4,37 +4,100 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gerenciamento de Clientes</title>
-    
+    <style></style>
 </head>
-<style>
-    .formCliente {
-        display: flex;
-        align-items: center;
-        align-content: center;
-        
-    }
-</style>
 <body>    
     <h2>Cadastrar Cliente</h2>
     <form  id="clienteForm">
-        <div class="formCliente">
-            <input type="hidden" id="id">
+        <label for="nome">Nome:</label>
+        <input type="text" id="nome" >
         
-            <label for="nome">Nome:</label>
-            <input type="text" id="nome" >
-            
-            <label for="sobrenome">Sobrenome:</label>
-            <input type="text" id="sobrenome" >
-            
-            <label for="cpf">CPF:</label>
-            <input type="text" id="cpf" >
-            
-            <button type="submit">Salvar</button>
-        </div>
+        <label for="sobrenome">Sobrenome:</label>
+        <input type="text" id="sobrenome" >
+        
+        <label for="cpf">CPF:</label>
+        <input type="text" id="cpf" >
+        
+        <button type="submit">Salvar</button>
     </form>
     
     <h2>Lista de Clientes</h2>
     <button id="carregarClientes">Carregar Clientes</button>
     <ul id="listaClientes"></ul>
 </body>
+<script>
+    function enviarCliente(event) {
+        event.preventDefault(); 
+
+        let formData = {
+            nome: document.getElementById('nome').value,
+            sobrenome: document.getElementById('sobrenome').value,
+            cpf: document.getElementById('cpf').value
+        };
+
+        fetch('http://localhost:8080/cliente', {
+            method: "POST",
+            headers: {"Content-Type": "application/json" },
+            body: JSON.stringify(formData)
+        })
+        .then(data => {
+            alert('sucesso:' + JSON.stringify(data));
+            carregarClientes();
+        })
+        .catch(error => alert('Erro:' + error.message));
+    }
+
+    function carregarClientes(){
+        fetch('http://localhost:8080/cliente', {
+            method: 'GET',
+            headers: {'Content-Type': 'application/json'}
+        })
+        .then(response => {
+            if(!response.ok){
+                throw new Error('Erro ao buscar clientes:' + response.status);
+            }
+            return response.json();
+        })
+        .then(clientes => {
+            let lista = document.getElementById('listaClientes');
+            lista.innerHTML = "";
+            clientes.forEach(cliente => {
+                let item = document.createElement('li');
+                item.textContent  = `${cliente.nome}- ${cliente.sobrenome}- CPF: ${cliente.cpf}`;
+                let btnDeletar = document.createElement('button')
+                btnDeletar.textContent = 'Deletar';
+                btnDeletar.style.marginLeft = '10px';
+                btnDeletar.style.color = 'red';
+                btnDeletar.onclick = function(){
+                    deletarCliente(cliente.idCliente)
+                }
+                item.appendChild(btnDeletar);
+                lista.appendChild(item);
+            });
+        })
+        .catch(error => alert('Erro:' + error.message));
+    }
+
+    function deletarCliente(idCliente){
+        if (confirm('Tem certeza que deseja deletar esse cliente ?')){
+            fetch('http://localhost:8080/cliente/${idCliente}', {
+                method: 'DELETE',
+                headers: {'Content-Type': 'application/json'}
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Erro ao deletar cliente:' + response.status);
+                }
+                alert('Cliente deletado com sucesso!');
+                carregarCliente();
+            })
+            .catch(error => alert('Erro:' + error.message));
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('clienteForm').addEventListener('submit', enviarCliente);
+        document.getElementById('carregarClientes').addEventListener('click', carregarClientes);
+    })
+</script>
 </html>

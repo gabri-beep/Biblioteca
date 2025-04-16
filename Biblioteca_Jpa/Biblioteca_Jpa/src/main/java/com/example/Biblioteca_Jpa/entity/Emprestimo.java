@@ -18,7 +18,7 @@ public class Emprestimo implements Serializable {
     private LocalDate dataFinal;
 
     @ManyToOne
-    @JoinColumn(name = "id_cliente", referencedColumnName = "id")
+    @JoinColumn(name = "id_cliente", referencedColumnName = "idCliente")
     @JsonBackReference
     private Cliente cliente;
 
