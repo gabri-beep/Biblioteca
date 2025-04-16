@@ -3,8 +3,11 @@ package com.example.Biblioteca_Jpa.entity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
+import java.io.Serializable;
+import java.util.Set;
+
 @Entity
-public class Livro {
+public class Livro implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idLivro;
@@ -14,10 +17,8 @@ public class Livro {
     private String isbn;
     private String genero;
 
-    @ManyToOne
-    @JoinColumn(name = "idEmprestimo", referencedColumnName = "idEmprestimo")
-    @JsonBackReference
-    private Emprestimo emprestimo;
+    @ManyToMany(mappedBy = "livros")
+    private Set<Emprestimo> emprestimos;
 
     public Livro() {
     }

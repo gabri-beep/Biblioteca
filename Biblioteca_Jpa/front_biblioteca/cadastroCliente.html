@@ -3,25 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="" defer></script>
     <title>Gerenciamento de Clientes</title>
+    
 </head>
+<style>
+    .formCliente {
+        display: flex;
+        align-items: center;
+        align-content: center;
+        
+    }
+</style>
 <body>    
     <h2>Cadastrar Cliente</h2>
-    <form id="clienteForm">
-        <input type="hidden" id="id">
+    <form  id="clienteForm">
+        <div class="formCliente">
+            <input type="hidden" id="id">
         
-        <label for="nome">Nome:</label>
-        <input type="text" id="nome" required>
-    
-    
-        <label for="sobrenome">Sobrenome:</label>
-        <input type="text" id="sobrenome" required>
-    
-        <label for="cpf">CPF:</label>
-        <input type="text" id="cpf" required>
-    
-        <button type="submit">Salvar</button>
+            <label for="nome">Nome:</label>
+            <input type="text" id="nome" >
+            
+            <label for="sobrenome">Sobrenome:</label>
+            <input type="text" id="sobrenome" >
+            
+            <label for="cpf">CPF:</label>
+            <input type="text" id="cpf" >
+            
+            <button type="submit">Salvar</button>
+        </div>
     </form>
     
     <h2>Lista de Clientes</h2>

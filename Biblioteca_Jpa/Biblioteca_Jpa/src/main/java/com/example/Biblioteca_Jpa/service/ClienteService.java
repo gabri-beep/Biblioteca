@@ -3,6 +3,7 @@ package com.example.Biblioteca_Jpa.service;
 import com.example.Biblioteca_Jpa.dto.ClienteDto;
 import com.example.Biblioteca_Jpa.entity.Cliente;
 import com.example.Biblioteca_Jpa.repository.ClienteRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -43,7 +44,6 @@ public class ClienteService {
         Optional<Cliente> clienteOptional = clienteRepository.findById(idCliente);
         if (clienteOptional.isPresent()){
             Cliente cliente = clienteOptional.get();
-            cliente.setIdCliente(clienteDto.getIdCliente());
             cliente.setNome(clienteDto.getNome());
             cliente.setSobrenome(clienteDto.getSobrenome());
             cliente.setCpf(clienteDto.getCpf());

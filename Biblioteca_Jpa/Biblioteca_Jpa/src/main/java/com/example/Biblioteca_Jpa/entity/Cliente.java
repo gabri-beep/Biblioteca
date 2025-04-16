@@ -1,18 +1,24 @@
 package com.example.Biblioteca_Jpa.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
+import java.io.Serializable;
+import java.util.Set;
+
 @Entity
-public class Cliente {
+public class Cliente implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idCliente;
     private String nome;
     private String sobrenome;
+    @Column(unique = true)
     private String cpf;
 
-    @OneToOne(mappedBy = "cliente", cascade = CascadeType.ALL)
-    private Emprestimo emprestimo;
+   @OneToMany(mappedBy = "cliente")
+   @JsonBackReference
+   private Set<Emprestimo> emprestimos;
 
     public Cliente() {
     }

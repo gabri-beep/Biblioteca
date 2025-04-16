@@ -1,31 +1,39 @@
 package com.example.Biblioteca_Jpa.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
-import java.util.Date;
+import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 @Entity
-public class Emprestimo {
+public class Emprestimo implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idEmprestimo;
-    private Date dataInicial;
-    private Date dataFinal;
+    private LocalDate dataInicial;
+    private LocalDate dataFinal;
 
-
-    @OneToOne
-    @JoinColumn(name = "idCliente", referencedColumnName = "idCliente")
+    @ManyToOne
+    @JoinColumn(name = "id_cliente", referencedColumnName = "id")
+    @JsonBackReference
     private Cliente cliente;
-    @OneToMany(mappedBy = "emprestimo", cascade = CascadeType.ALL)
-    @JsonManagedReference
-    private List<Livro> livros;
+
+    @ManyToMany
+    @JoinTable(
+            name = "emprestimo_livro",
+            joinColumns = @JoinColumn(name = "emprestimo_id"),
+            inverseJoinColumns = @JoinColumn(name = "livro_id")
+    )
+    private Set<Livro> livros;
 
     public Emprestimo() {
     }
 
-    public Emprestimo(Long idEmprestimo, Date dataInicial, Date dataFinal, Cliente cliente, List<Livro> livros) {
+    public Emprestimo(Long idEmprestimo, LocalDate dataInicial, LocalDate dataFinal, Cliente cliente, Set<Livro> livros) {
         this.idEmprestimo = idEmprestimo;
         this.dataInicial = dataInicial;
         this.dataFinal = dataFinal;
@@ -41,19 +49,19 @@ public class Emprestimo {
         this.idEmprestimo = idEmprestimo;
     }
 
-    public Date getDataInicial() {
+    public LocalDate getDataInicial() {
         return dataInicial;
     }
 
-    public void setDataInicial(Date dataInicial) {
+    public void setDataInicial(LocalDate dataInicial) {
         this.dataInicial = dataInicial;
     }
 
-    public Date getDataFinal() {
+    public LocalDate getDataFinal() {
         return dataFinal;
     }
 
-    public void setDataFinal(Date dataFinal) {
+    public void setDataFinal(LocalDate dataFinal) {
         this.dataFinal = dataFinal;
     }
 
@@ -65,11 +73,11 @@ public class Emprestimo {
         this.cliente = cliente;
     }
 
-    public List<Livro> getLivros() {
+    public Set<Livro> getLivros() {
         return livros;
     }
 
-    public void setLivros(List<Livro> livros) {
+    public void setLivros(Set<Livro> livros) {
         this.livros = livros;
     }
 }

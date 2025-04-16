@@ -4,18 +4,25 @@ import com.example.Biblioteca_Jpa.entity.Cliente;
 import com.example.Biblioteca_Jpa.entity.Emprestimo;
 import com.example.Biblioteca_Jpa.entity.Livro;
 
-import java.util.Date;
-import java.util.List;
+import java.io.Serializable;
+import java.time.LocalDate;
+import java.util.Set;
 
-public class EmprestimoDto {
+public class EmprestimoDto implements Serializable {
     private Long idEmprestimo;
-    private Date dataInicial;
-    private Date dataFinal;
+    private LocalDate dataInicial;
+    private LocalDate dataFinal;
     private Cliente cliente;
-    private List<Livro> livros;
+    private Set<Livro> livros;
 
     public Emprestimo toEmprestimo(){
-        return new Emprestimo(this.idEmprestimo, this.dataInicial, this.dataFinal, this.cliente, this.livros);
+        return new Emprestimo(
+                this.idEmprestimo,
+                this.dataInicial,
+                this.dataFinal,
+                this.getCliente(),
+                this.livros
+        );
     }
 
     public EmprestimoDto fromEmprestimo(Emprestimo emprestimo){
@@ -23,17 +30,20 @@ public class EmprestimoDto {
                 emprestimo.getIdEmprestimo(),
                 emprestimo.getDataInicial(),
                 emprestimo.getDataFinal(),
-                emprestimo.getLivros());
+                emprestimo.getCliente(),
+                emprestimo.getLivros()
+        );
     }
 
 
     public EmprestimoDto() {
     }
 
-    public EmprestimoDto(Long idEmprestimo, Date dataInicial, Date dataFinal, List<Livro> livros) {
+    public EmprestimoDto(Long idEmprestimo, LocalDate dataInicial, LocalDate dataFinal, Cliente cliente, Set<Livro> livros) {
         this.idEmprestimo = idEmprestimo;
         this.dataInicial = dataInicial;
         this.dataFinal = dataFinal;
+        this.cliente = cliente;
         this.livros = livros;
     }
 
@@ -45,27 +55,35 @@ public class EmprestimoDto {
         this.idEmprestimo = idEmprestimo;
     }
 
-    public Date getDataInicial() {
+    public LocalDate getDataInicial() {
         return dataInicial;
     }
 
-    public void setDataInicial(Date dataInicial) {
+    public void setDataInicial(LocalDate dataInicial) {
         this.dataInicial = dataInicial;
     }
 
-    public Date getDataFinal() {
+    public LocalDate getDataFinal() {
         return dataFinal;
     }
 
-    public void setDataFinal(Date dataFinal) {
+    public void setDataFinal(LocalDate dataFinal) {
         this.dataFinal = dataFinal;
     }
 
-    public List<Livro> getLivros() {
+    public Cliente getCliente() {
+        return cliente;
+    }
+
+    public void setCliente(Cliente cliente) {
+        this.cliente = cliente;
+    }
+
+    public Set<Livro> getLivros() {
         return livros;
     }
 
-    public void setLivros(List<Livro> livros) {
+    public void setLivros(Set<Livro> livros) {
         this.livros = livros;
     }
 }

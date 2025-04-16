@@ -44,7 +44,6 @@ public class LivroService {
         Optional<Livro> livroOptional = livroRepository.findById(idLivro);
         if (livroOptional.isPresent()){
             Livro livro = livroOptional.get();
-            livro.setIdLivro(livroDto.getIdLivro());
             livro.setNome(livroDto.getNome());
             livro.setAutor(livroDto.getAutor());
             livro.setIsbn(livroDto.getIsbn());

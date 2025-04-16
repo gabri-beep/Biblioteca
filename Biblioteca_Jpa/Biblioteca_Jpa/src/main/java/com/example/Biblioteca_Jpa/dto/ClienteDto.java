@@ -2,7 +2,9 @@ package com.example.Biblioteca_Jpa.dto;
 
 import com.example.Biblioteca_Jpa.entity.Cliente;
 
-public class ClienteDto {
+import java.io.Serializable;
+
+public class ClienteDto implements Serializable {
     private Long idCliente;
     private String nome;
     private String sobrenome;
@@ -18,7 +20,11 @@ public class ClienteDto {
     }
 
     public ClienteDto fromCliente(Cliente cliente){
-        return new ClienteDto(cliente.getIdCliente(), cliente.getNome(), cliente.getSobrenome(), cliente.getCpf());
+        return new ClienteDto(
+                cliente.getIdCliente(),
+                cliente.getNome(),
+                cliente.getSobrenome(),
+                cliente.getCpf());
     }
 
 
