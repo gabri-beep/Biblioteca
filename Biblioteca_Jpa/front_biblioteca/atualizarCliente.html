@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Gerenciamento de Clientes</title>
+    <title>Document</title>
     <style>
       /* Reset e estilos básicos */
       * {
@@ -161,31 +161,56 @@
     </style>
   </head>
   <body>
-    <h3><a href="atualizarCliente.html">Atualizar Cliente</a></h3>
-    <h2>Cadastrar Cliente</h2>
+    <h3><a href="cadastroCliente.html">Cadastrar Cliente</a></h3>
+    <h2>Atualizar cliente</h2>
 
-    <div class="form">
-      <form id="clienteForm">
-        <label for="nome">Nome:</label>
-        <input type="text" id="nome" />
+    <form id="clienteFormAtualizar">
+      <input type="hidden" id="idCliente" />
+      <label for="nome">Nome:</label>
+      <input type="text" id="nome" />
 
-        <label for="sobrenome">Sobrenome:</label>
-        <input type="text" id="sobrenome" />
+      <label for="sobrenome">Sobrenome:</label>
+      <input type="text" id="sobrenome" />
 
-        <label for="cpf">CPF:</label>
-        <input type="text" id="cpf" />
+      <label for="cpf">CPF:</label>
+      <input type="text" id="cpf" />
 
-        <button type="submit">Salvar</button>
-      </form>
-    </div>
-
-    <h2>Lista de Clientes</h2>
-    <button id="carregarClientes">Carregar Clientes</button>
-    <ul id="listaClientes"></ul>
+      <button type="submit">Salvar</button>
+    </form>
 
     <script>
+      function paramUrl() {
+        const params = new URLSearchParams(window.location.search);
+        const idCliente = params.get("idCliente");
+
+        if (idCliente) {
+          carregarClientePorId(idCliente);
+        }
+      }
+
+      function carregarClientePorId(idCliente) {
+        fetch(`http://localhost:8080/cliente/${idCliente}`, {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Erro ao buscar o cliente:" + response.status);
+            }
+            return response.json();
+          })
+          .then((cliente) => {
+            document.getElementById("idCliente").value = cliente.idCliente;
+            document.getElementById("nome").value = cliente.nome;
+            document.getElementById("sobrenome").value = cliente.sobrenome;
+            document.getElementById("cpf").value = cliente.cpf;
+          })
+          .catch((error) => alert("Erro:" + error.message));
+      }
+
       function enviarCliente(event) {
         event.preventDefault();
+        let idCliente = document.getElementById("idCliente").value;
 
         let formData = {
           nome: document.getElementById("nome").value,
@@ -193,73 +218,24 @@
           cpf: document.getElementById("cpf").value,
         };
 
-        fetch(`http://localhost:8080/cliente`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
+        fetch(`http://localhost:8080/cliente/${idCliente}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
           body: JSON.stringify(formData),
         })
           .then((data) => {
-            alert("sucesso:" + JSON.stringify(formData));
-            carregarClientes();
+            alert("Sucesso:" + JSON.stringify(formData));
           })
           .catch((error) => alert("Erro:" + error.message));
-      }
-
-      function carregarClientes() {
-        fetch(`http://localhost:8080/cliente`, {
-          method: "GET",
-          headers: { "Content-Type": "application/json" },
-        })
-          .then((response) => {
-            if (!response.ok) {
-              throw new Error("Erro ao buscar clientes:" + response.status);
-            }
-            return response.json();
-          })
-          .then((clientes) => {
-            let lista = document.getElementById("listaClientes");
-            lista.innerHTML = "";
-            clientes.forEach((cliente) => {
-              let item = document.createElement("li");
-              item.textContent = `${cliente.idCliente}:${cliente.nome}- ${cliente.sobrenome}- CPF: ${cliente.cpf}`;
-              let btnDeletar = document.createElement("button");
-              btnDeletar.textContent = "Deletar";
-              btnDeletar.style.marginLeft = "10px";
-              btnDeletar.style.color = "red";
-              btnDeletar.onclick = function () {
-                deletarCliente(cliente.idCliente);
-              };
-              item.appendChild(btnDeletar);
-              lista.appendChild(item);
-            });
-          })
-          .catch((error) => alert("Erro:" + error.message));
-      }
-
-      function deletarCliente(idCliente) {
-        if (confirm("Tem certeza que deseja deletar esse cliente ?")) {
-          fetch(`http://localhost:8080/cliente/${idCliente}`, {
-            method: "DELETE",
-            headers: { "Content-Type": "application/json" },
-          })
-            .then((response) => {
-              if (!response.ok) {
-                throw new Error("Erro ao deletar cliente:" + response.status);
-              }
-              alert("Cliente deletado com sucesso!");
-              carregarClientes();
-            })
-            .catch((error) => alert("Erro:" + error.message));
-        }
       }
 
       document.addEventListener("DOMContentLoaded", () => {
         document
-          .getElementById("clienteForm")
+          .getElementById("clienteFormAtualizar")
           .addEventListener("submit", enviarCliente);
-        document
-          .getElementById("carregarClientes")
-          .addEventListener("click", carregarClientes);
+        paramUrl();
       });
     </script>
   </body>
