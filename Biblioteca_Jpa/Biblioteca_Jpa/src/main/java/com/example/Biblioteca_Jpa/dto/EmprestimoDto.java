@@ -6,6 +6,7 @@ import com.example.Biblioteca_Jpa.entity.Livro;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Set;
 
 public class EmprestimoDto implements Serializable {
@@ -13,7 +14,7 @@ public class EmprestimoDto implements Serializable {
     private LocalDate dataInicial;
     private LocalDate dataFinal;
     private Cliente cliente;
-    private Set<Livro> livros;
+    private List<Livro> livros;
 
     public Emprestimo toEmprestimo(){
         return new Emprestimo(
@@ -39,7 +40,7 @@ public class EmprestimoDto implements Serializable {
     public EmprestimoDto() {
     }
 
-    public EmprestimoDto(Long idEmprestimo, LocalDate dataInicial, LocalDate dataFinal, Cliente cliente, Set<Livro> livros) {
+    public EmprestimoDto(Long idEmprestimo, LocalDate dataInicial, LocalDate dataFinal, Cliente cliente, List<Livro> livros) {
         this.idEmprestimo = idEmprestimo;
         this.dataInicial = dataInicial;
         this.dataFinal = dataFinal;
@@ -79,11 +80,11 @@ public class EmprestimoDto implements Serializable {
         this.cliente = cliente;
     }
 
-    public Set<Livro> getLivros() {
+    public List<Livro> getLivros() {
         return livros;
     }
 
-    public void setLivros(Set<Livro> livros) {
+    public void setLivros(List<Livro> livros) {
         this.livros = livros;
     }
 }

@@ -6,6 +6,7 @@ import com.example.Biblioteca_Jpa.repository.ClienteRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,6 +20,10 @@ public class ClienteService {
     //buscar todos os clientes
     public List<Cliente> getAllCliente(){
         return clienteRepository.findAll();
+    }
+
+    public List<Cliente> getAllByNome(String nome){
+        return clienteRepository.findAllByNome(nome);
     }
 
     //buscar clientes pelo id

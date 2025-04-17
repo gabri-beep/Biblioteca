@@ -160,9 +160,9 @@
     </style>
 </head>
 <body>
-    <h3><a href="atualizarLivro.html">Atualizar Livro</a></h3>
+    <h3><a href="cadastroLivro.html">Cadastrar Livro</a></h3>
     <h2>Cadastrar Livro</h2>
-    <form id="livroForm">
+    <form id="livroFormAtualizar">
         <input type="hidden" id="idLivro">
         
         <label for="nome">Nome:</label>
@@ -181,91 +181,67 @@
         <br>
         <button type="submit">Salvar</button>
     </form>
-<br>
-    <button id="carregarLivros">Carregar Lista</button>
-
-    <h2>Lista de Livros</h2>
-    <ul id="listaLivros"></ul>
-
     <script>
-         function enviarLivro(event) {
-        event.preventDefault();
-
-        let formData = {
-          nome: document.getElementById("nome").value,
-          autor: document.getElementById('autor').value,
-          isbn: document.getElementById('isbn').value,
-          genero: document.getElementById('genero').value
-        };
-
-        fetch(`http://localhost:8080/livro`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(formData),
-        })
-          .then((data) => {
-            alert("sucesso:" + JSON.stringify(formData));
-            carregarLivros();
-          })
-          .catch((error) => alert("Erro:" + error.message));
-      }
-
-      function carregarLivros() {
-        fetch(`http://localhost:8080/livro`, {
-          method: "GET",
-          headers: { "Content-Type": "application/json" },
-        })
-          .then((response) => {
-            if (!response.ok) {
-              throw new Error("Erro ao buscar livros:" + response.status);
-            }
-            return response.json();
-          })
-          .then((livros) => {
-            let lista = document.getElementById("listaLivros");
-            lista.innerHTML = "";
-            livros.forEach((livro) => {
-              let item = document.createElement("li");
-              item.textContent = `${livro.idLivro}:${livro.nome}- ${livro.autor}-ISBN:${livro.isbn} ${livro.genero}`;
-              let btnDeletar = document.createElement("button");
-              btnDeletar.textContent = "Deletar";
-              btnDeletar.style.marginLeft = "5px";
-              btnDeletar.style.color = "green";
-              btnDeletar.onclick = function () {
-                deletarLivro(livro.idLivro);
-              };
-              item.appendChild(btnDeletar);
-              lista.appendChild(item);
-            });
-          })
-          .catch((error) => alert("Erro:" + error.message));
-      }
-
-      function deletarLivro(idLivro) {
-        if (confirm("Tem certeza que deseja deletar esse livro ?")) {
+        function paramUrl() {
+          const params = new URLSearchParams(window.location.search);
+          const idLivro = params.get("idLivro");
+  
+          if (idLivro) {
+            carregarLivroPorId(idLivro);
+          }
+        }
+  
+        function carregarLivroPorId(idLivro) {
           fetch(`http://localhost:8080/livro/${idLivro}`, {
-            method: "DELETE",
+            method: "GET",
             headers: { "Content-Type": "application/json" },
           })
             .then((response) => {
               if (!response.ok) {
-                throw new Error("Erro ao deletar cliente:" + response.status);
+                throw new Error("Erro ao buscar o livro:" + response.status);
               }
-              alert("Livro deletado com sucesso!");
-              carregarLivros();
+              return response.json();
+            })
+            .then((livro) => {
+              document.getElementById("idLivro").value = livro.idLivro;
+              document.getElementById("nome").value = livro.nome;
+              document.getElementById("autor").value = livro.autor;
+              document.getElementById("isbn").value = livro.isbn;
+              document.getElementById('genero').value = livro.genero;
             })
             .catch((error) => alert("Erro:" + error.message));
         }
-      }
-
-      document.addEventListener("DOMContentLoaded", () => {
-        document
-          .getElementById("livroForm")
-          .addEventListener("submit", enviarLivro);
-        document
-          .getElementById("carregarLivros")
-          .addEventListener("click", carregarLivros);
-      });
-    </script>
+  
+        function enviarLivro(event) {
+          event.preventDefault();
+          let idLivro = document.getElementById("idLivro").value;
+  
+          let formData = {
+            nome: document.getElementById("nome").value,
+            autor: document.getElementById("autor").value,
+            isbn: document.getElementById("isbn").value,
+            genero: document.getElementById('genero').value
+          };
+  
+          fetch(`http://localhost:8080/livro/${idLivro}`, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(formData),
+          })
+            .then((data) => {
+              alert("Sucesso:" + JSON.stringify(formData));
+            })
+            .catch((error) => alert("Erro:" + error.message));
+        }
+  
+        document.addEventListener("DOMContentLoaded", () => {
+          document
+            .getElementById("livroFormAtualizar")
+            .addEventListener("submit", enviarLivro);
+          paramUrl();
+        });
+      </script>
 </body>
 </html>

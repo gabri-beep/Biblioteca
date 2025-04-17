@@ -18,7 +18,10 @@ public class ClienteController {
     private ClienteService clienteService;
 
     @GetMapping
-    public List<Cliente> getAll(){
+    public List<Cliente> getAll(@RequestParam(required = false) String nome){
+        if (nome != null && !nome.isEmpty()){
+            return clienteService.getAllByNome(nome);
+        }
         return clienteService.getAllCliente();
     }
 

@@ -45,9 +45,9 @@ public class EmprestimoService {
         Optional<Emprestimo> emprestimoOptional = emprestimoRepository.findById(idEmprestimo);
         if (emprestimoOptional.isPresent()){
             Emprestimo emprestimo = emprestimoOptional.get();
-            emprestimo.setDataInicial(emprestimoDto.getDataInicial());
-            emprestimo.setDataFinal(emprestimoDto.getDataFinal());
 
+            emprestimo.setDataFinal(emprestimoDto.getDataFinal());
+            emprestimo.setLivros(emprestimoDto.getLivros());
             emprestimo = emprestimoRepository.save(emprestimo);
 
             return Optional.of(emprestimoDto.fromEmprestimo(emprestimo));

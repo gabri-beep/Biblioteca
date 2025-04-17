@@ -21,6 +21,10 @@ public class LivroService {
         return livroRepository.findAll();
     }
 
+    public List<Livro> gatAllByGenero(String genero){
+        return livroRepository.findAllByGenero(genero);
+    }
+
     //buscar livros pelo id
     public Optional<LivroDto> getById(Long idLivro){
         Optional<Livro> livroOptional = livroRepository.findById(idLivro);

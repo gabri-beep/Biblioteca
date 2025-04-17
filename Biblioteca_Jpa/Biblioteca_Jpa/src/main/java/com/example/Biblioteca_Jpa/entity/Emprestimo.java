@@ -7,7 +7,6 @@ import jakarta.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 public class Emprestimo implements Serializable {
@@ -25,15 +24,15 @@ public class Emprestimo implements Serializable {
     @ManyToMany
     @JoinTable(
             name = "emprestimo_livro",
-            joinColumns = @JoinColumn(name = "emprestimo_id"),
-            inverseJoinColumns = @JoinColumn(name = "livro_id")
+            joinColumns = @JoinColumn(name = "emprestimo_id", referencedColumnName = "idEmprestimo"),
+            inverseJoinColumns = @JoinColumn(name = "livro_id", referencedColumnName = "idLivro")
     )
-    private Set<Livro> livros;
+    private List<Livro> livros;
 
     public Emprestimo() {
     }
 
-    public Emprestimo(Long idEmprestimo, LocalDate dataInicial, LocalDate dataFinal, Cliente cliente, Set<Livro> livros) {
+    public Emprestimo(Long idEmprestimo, LocalDate dataInicial, LocalDate dataFinal, Cliente cliente, List<Livro> livros) {
         this.idEmprestimo = idEmprestimo;
         this.dataInicial = dataInicial;
         this.dataFinal = dataFinal;
@@ -73,11 +72,11 @@ public class Emprestimo implements Serializable {
         this.cliente = cliente;
     }
 
-    public Set<Livro> getLivros() {
+    public List<Livro> getLivros() {
         return livros;
     }
 
-    public void setLivros(Set<Livro> livros) {
+    public void setLivros(List<Livro> livros) {
         this.livros = livros;
     }
 }
