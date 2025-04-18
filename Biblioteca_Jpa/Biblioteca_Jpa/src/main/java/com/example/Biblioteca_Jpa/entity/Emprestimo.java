@@ -18,7 +18,6 @@ public class Emprestimo implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "id_cliente", referencedColumnName = "idCliente")
-    @JsonBackReference
     private Cliente cliente;
 
     @ManyToMany

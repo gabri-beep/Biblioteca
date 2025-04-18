@@ -180,77 +180,129 @@
     </div>
 
     <h2>Lista de Clientes</h2>
-     
-    <button id="carregarClientes">Carregar Clientes</button>
+
+    <form id="clienteBusca">
+      <label>Nome do cliente:</label>
+      <input type="text" name="nomeBusca" id="nomeBusca" /><br /><br />
+      <button type="submit">Carregar clientes</button>
+    </form>
+
     <ul id="listaClientes"></ul>
 
     <script>
-      function enviarCliente(event) {
-        event.preventDefault();
-
+      function criarObjetoParaEnviar() {
         let formData = {
           nome: document.getElementById("nome").value,
           sobrenome: document.getElementById("sobrenome").value,
-          cpf: document.getElementById("cpf").value,
+          cpf: parseInt(document.getElementById("cpf").value),
         };
 
-        fetch(`http://localhost:8080/cliente`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(formData),
-        })
-          .then((data) => {
-            alert("sucesso:" + JSON.stringify(formData));
-            carregarClientes();
-          })
-          .catch((error) => alert("Erro:" + error.message));
+        return formData;
       }
 
-      function carregarClientes() {
-        fetch(`http://localhost:8080/cliente`, {
-          method: "GET",
-          headers: { "Content-Type": "application/json" },
-        })
-          .then((response) => {
-            if (!response.ok) {
-              throw new Error("Erro ao buscar clientes:" + response.status);
-            }
-            return response.json();
-          })
-          .then((clientes) => {
-            let lista = document.getElementById("listaClientes");
-            lista.innerHTML = "";
-            clientes.forEach((cliente) => {
-              let item = document.createElement("li");
-              item.textContent = `${cliente.idCliente}:${cliente.nome}- ${cliente.sobrenome}- CPF: ${cliente.cpf}`;
-              let btnDeletar = document.createElement("button");
-              btnDeletar.textContent = "Deletar";
-              btnDeletar.style.marginLeft = "10px";
-              btnDeletar.style.color = "red";
-              btnDeletar.onclick = function () {
-                deletarCliente(cliente.idCliente);
-              };
-              item.appendChild(btnDeletar);
-              lista.appendChild(item);
-            });
-          })
-          .catch((error) => alert("Erro:" + error.message));
-      }
+      async function enviarCliente(event) {
+        event.preventDefault();
 
-      function deletarCliente(idCliente) {
-        if (confirm("Tem certeza que deseja deletar esse cliente ?")) {
-          fetch(`http://localhost:8080/cliente/${idCliente}`, {
-            method: "DELETE",
+        let formData = criarObjetoParaEnviar();
+
+        try {
+          let response = await fetch(`http://localhost:8080/cliente`, {
+            method: "POST",
             headers: { "Content-Type": "application/json" },
-          })
-            .then((response) => {
-              if (!response.ok) {
-                throw new Error("Erro ao deletar cliente:" + response.status);
+            body: JSON.stringify(formData),
+          });
+
+          if (!response.ok) {
+            alert("Erro do back-end:" + response.status);
+            return;
+          }
+
+          let data = await response.json();
+
+          alert("Sucesso:" + JSON.stringify(data));
+        } catch (error) {
+          alert("Erro na requisição:" + error.message);
+        }
+      }
+
+      function criarListaDeClientes(data) {
+        let lista = document.getElementById("listaClientes");
+        lista.innerHTML = "";
+        data.forEach((cliente) => {
+          let item = document.createElement("li");
+          item.textContent = `ID: ${cliente.idCliente}- ${cliente.nome}- ${cliente.sobrenome}- CPF: ${cliente.cpf}`;
+
+          let btnLink = document.createElement("button");
+          btnLink.textContent = "Editar";
+          btnLink.target = "_blank";
+          btnLink.style.marginLeft = "10px";
+          btnLink.onclick = function () {
+            window.open(
+              `atualizarCliente.html?id=${cliente.idCliente}`,
+              "_blank"
+            );
+          };
+          item.appendChild(btnLink);
+
+          let btnDeletar = document.createElement("button");
+          btnDeletar.textContent = "Deletar";
+          btnDeletar.style.marginLeft = "10px";
+          btnDeletar.onclick = function () {
+            deletarCliente(cliente.idCliente);
+          };
+          item.appendChild(btnDeletar);
+
+          lista.appendChild(item);
+        });
+      }
+
+      async function getClientes(event) {
+        event.preventDefault();
+
+        let nome = document.getElementById("nomeBusca").value;
+
+        try {
+          let response = await fetch(
+            `http://localhost:8080/cliente?nome=${nome}`,
+            {
+              method: "GET",
+              headers: { "Content-Type": "application/json" },
+            }
+          );
+
+          if (!response.ok) {
+            alert("Erro do back-end" + response.status);
+            return;
+          }
+
+          let data = await response.json();
+
+          criarListaDeClientes(data);
+        } catch (error) {
+          alert("Erro na requisição:" + error.message);
+        }
+      }
+
+      async function deletarCliente(id) {
+        if (confirm("Tem certeza que deseja deletar este Cliente?")) {
+          try {
+            let response = await fetch(
+              `http://localhost:8080/cliente/${idCliente}`,
+              {
+                method: "DELETE",
+                headers: { "Content-Type": "application/json" },
               }
-              alert("Cliente deletado com sucesso!");
-              carregarClientes();
-            })
-            .catch((error) => alert("Erro:" + error.message));
+            );
+
+            if (!response.ok) {
+              alert("Erro do back-end" + response.status);
+              return;
+            }
+            alert("Cliente deletado com sucesso!");
+            getClientes();
+          } catch (error) {
+            alert("Erro na requisição: " + error.message);
+          }
         }
       }
 
@@ -259,8 +311,8 @@
           .getElementById("clienteForm")
           .addEventListener("submit", enviarCliente);
         document
-          .getElementById("carregarClientes")
-          .addEventListener("click", carregarClientes);
+          .getElementById("clienteBusca")
+          .addEventListener("click", getClientes);
       });
     </script>
   </body>

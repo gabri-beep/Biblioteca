@@ -1,6 +1,7 @@
 package com.example.Biblioteca_Jpa.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
@@ -17,7 +18,7 @@ public class Cliente implements Serializable {
     private String cpf;
 
    @OneToMany(mappedBy = "cliente")
-   @JsonBackReference
+   @JsonIgnore
    private Set<Emprestimo> emprestimos;
 
     public Cliente() {

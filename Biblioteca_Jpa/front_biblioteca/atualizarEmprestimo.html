@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+          font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+  
+      body {
+          background-color: #f5f5f5;
+          color: #333;
+          line-height: 1.6;
+          padding: 20px;
+      }
+  
+      h2 {
+          color: #2c3e50;
+          margin-bottom: 20px;
+          padding-bottom: 10px;
+          border-bottom: 2px solid #3498db;
+          text-align: center;
+      }
+  
+      h3 {
+          color: #2c3e50;
+          margin: 20px 0;
+          text-align: center;
+      }
+  
+      h3 a {
+          color: #3498db;
+          text-decoration: none;
+          transition: color 0.3s;
+      }
+  
+      h3 a:hover {
+          color: #2980b9;
+          text-decoration: underline;
+      }
+  
+      /* Container principal */
+      #emprestimoForm {
+          background: white;
+          border-radius: 8px;
+          box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+          padding: 25px;
+          margin: 0 auto 30px;
+          max-width: 800px;
+      }
+  
+      /* Estilo dos campos do formulário */
+      .form-group {
+          margin-bottom: 20px;
+      }
+  
+      #emprestimoForm label {
+          display: block;
+          margin-bottom: 8px;
+          font-weight: 600;
+          color: #2c3e50;
+      }
+  
+      #emprestimoForm input[type="date"],
+      #emprestimoForm select {
+          width: 100%;
+          padding: 12px;
+          border: 1px solid #ddd;
+          border-radius: 4px;
+          font-size: 16px;
+          transition: all 0.3s;
+      }
+  
+      #emprestimoForm input:focus,
+      #emprestimoForm select:focus {
+          border-color: #3498db;
+          outline: none;
+          box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+      }
+  
+      /* Estilo dos checkboxes de livros */
+      .livros-container {
+          margin: 20px 0;
+          padding: 15px;
+          background-color: #f9f9f9;
+          border-radius: 4px;
+          border: 1px solid #eee;
+      }
+  
+      .livro-option {
+          margin: 10px 0;
+          display: flex;
+          align-items: center;
+      }
+  
+      .livro-option input[type="checkbox"] {
+          width: auto;
+          margin-right: 10px;
+          transform: scale(1.2);
+      }
+  
+      .livro-option label {
+          font-weight: normal;
+          margin-bottom: 0;
+          cursor: pointer;
+      }
+  
+      /* Estilo dos botões */
+      .btn {
+          padding: 12px 20px;
+          border-radius: 4px;
+          cursor: pointer;
+          font-size: 16px;
+          font-weight: 600;
+          transition: all 0.3s;
+          border: none;
+          text-align: center;
+      }
+  
+      .btn-primary {
+          background-color: #3498db;
+          color: white;
+      }
+  
+      .btn-primary:hover {
+          background-color: #2980b9;
+      }
+  
+      .btn-danger {
+          background-color: #e74c3c;
+          color: white;
+      }
+  
+      .btn-danger:hover {
+          background-color: #c0392b;
+      }
+  
+      .btn-success {
+          background-color: #2ecc71;
+          color: white;
+      }
+  
+      .btn-success:hover {
+          background-color: #27ae60;
+      }
+  
+      /* Lista de empréstimos */
+      #lista-container {
+          max-width: 800px;
+          margin: 30px auto;
+      }
+  
+      #carregarEmprestimo {
+          width: 100%;
+          margin-bottom: 20px;
+      }
+  
+      #listaEmprestimo {
+          list-style: none;
+          background: white;
+          border-radius: 8px;
+          box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+          padding: 20px;
+      }
+  
+      #listaEmprestimo li {
+          padding: 15px;
+          border-bottom: 1px solid #eee;
+          display: flex;
+          flex-wrap: wrap;
+          align-items: center;
+          justify-content: space-between;
+      }
+  
+      #listaEmprestimo li:last-child {
+          border-bottom: none;
+      }
+  
+      .emprestimo-info {
+          flex: 1;
+          min-width: 300px;
+          margin-bottom: 10px;
+      }
+  
+      .emprestimo-actions {
+          display: flex;
+          gap: 10px;
+      }
+  
+      /* Mensagens de erro/sucesso */
+      .alert {
+          padding: 15px;
+          margin-bottom: 20px;
+          border-radius: 4px;
+      }
+  
+      .alert-success {
+          background-color: #d4edda;
+          color: #155724;
+          border: 1px solid #c3e6cb;
+      }
+  
+      .alert-error {
+          background-color: #f8d7da;
+          color: #721c24;
+          border: 1px solid #f5c6cb;
+      }
+  
+      /* Responsividade */
+      @media (min-width: 600px) {
+          #emprestimoForm {
+              padding: 30px;
+          }
+  
+          .form-row {
+              display: flex;
+              gap: 20px;
+          }
+  
+          .form-group {
+              flex: 1;
+          }
+  
+          #carregarEmprestimo {
+              max-width: 200px;
+              margin-left: auto;
+              margin-right: auto;
+          }
+      }
+  
+      @media (min-width: 768px) {
+          body {
+              padding: 40px;
+          }
+  
+          #listaEmprestimo li {
+              flex-wrap: nowrap;
+          }
+  
+          .emprestimo-info {
+              margin-bottom: 0;
+          }
+      }
+  </style>
+  </head>
+  <body>
+    <h3><a href="cadastroEmprestimo.html">Fazer emprestimo</a></h3>
+    <h2>Atualizar Emprestimo</h2>
+    <form id="emprestimoForm">
+      <input type="hidden" id="emprestimoId" />
+      <label>Data Inicial:</label>
+      <input
+        type="date"
+        name="dataInicial"
+        id="dataInicial"
+        required
+      /><br /><br />
+
+      <label>Data Final:</label>
+      <input type="date" name="dataFinal" id="dataFinal" required /><br /><br />
+
+      <label> Cliente:</label>
+      <select name="clienteId" id="clienteSelect" required="true">
+        <option>Select...</option></select
+      ><br /><br />
+
+      <label> Livros: </label><br />
+
+      <button type="submit">Enviar</button>
+    </form>
+    <script defer>
+      function paramUrl() {
+        const params = new URLSearchParams(window.location.search);
+        const idEmprestimo = params.get("idEmprestimo");
+
+        if (idEmprestimo) {
+          getEmprestimoPorId(idEmprestimo);
+        }
+      }
+
+      function preencherFormEmprestimo(data) {
+        document.getElementById("emprestimoId").value = data.idEmprestimo;
+        document.getElementById("dataInicial").value = data.dataInicial;
+        document.getElementById("dataFinal").value = data.dataFinal;
+        document.getElementById("clienteSelect").value = data.cliente.idCliente;
+
+        let idsLivrosSelecionados = data.livros.map((livro) => livro.idLivro);
+
+        let checkboxes = document.querySelectorAll('input[name="livros"]');
+        checkboxes.forEach((checkbox) => {
+          const idLivro = parseInt(checkbox.value);
+          checkbox.checked = idsLivrosSelecionados.includes(idLivro);
+        });
+      }
+
+      function criarCampoSelectCliente(data) {
+        let select = document.getElementById("clienteSelect");
+
+        data.forEach((cliente) => {
+          let option = document.createElement("option");
+          option.value = cliente.idCliente;
+          option.textContent = cliente.nome;
+          select.appendChild(option);
+        });
+      }
+
+      function criarCheckBoxLivros(data) {
+        const form = document.getElementById("emprestimoForm");
+
+        data.forEach((livro) => {
+          let checkbox = document.createElement("input");
+          checkbox.type = "checkbox";
+          checkbox.name = "livros";
+          checkbox.value = livro.idLivro;
+
+          let texto = document.createTextNode(` ${livro.nome}`);
+
+          form.insertBefore(checkbox, form.lastElementChild);
+          form.insertBefore(texto, form.lastElementChild);
+          form.insertBefore(
+            document.createElement("br"),
+            form.lastElementChild
+          );
+        });
+      }
+
+      async function getClientes() {
+        try {
+          let response = await fetch("http://localhost:8080/cliente", {
+            method: "GET",
+            headers: { "Content-Type": "application/json" },
+          });
+
+          if (!response.ok) {
+            alert("Erro do back-end" + response.status);
+            return;
+          }
+
+          let data = await response.json();
+
+          criarCampoSelectCliente(data);
+        } catch (error) {
+          alert("Erro na requisição: " + error.message);
+        }
+      }
+
+      async function getLivros() {
+        try {
+          let response = await fetch("http://localhost:8080/livro", {
+            method: "GET",
+            headers: { "Content-Type": "application/json" },
+          });
+
+          if (!response.ok) {
+            alert("Erro do back-end" + response.status);
+            return;
+          }
+
+          let data = await response.json();
+
+          criarCheckBoxLivros(data);
+        } catch (error) {
+          alert("Erro na requisição: " + error.message);
+        }
+      }
+
+      function criarObjeto() {
+        let checkboxes = document.querySelectorAll(
+          'input[name="livros"]:checked'
+        );
+
+        let livrosSelecionados = Array.from(checkboxes).map((cb) => ({
+          idLivro: parseInt(cb.value),
+        }));
+
+        let formData = {
+          dataInicial: document.getElementById("dataInicial").value,
+          dataFinal: document.getElementById("dataFinal").value,
+          cliente: {
+            idCliente: document.getElementById("clienteSelect").value,
+          },
+          livros: livrosSelecionados,
+        };
+
+        return formData;
+      }
+
+      async function putEmprestimo(event) {
+        event.preventDefault();
+
+        let formData = criarObjeto();
+
+        let idEmprestimo = document.getElementById("emprestimoId").value;
+
+        try {
+          let response = await fetch(
+            `http://localhost:8080/emprestimo/${idEmprestimo}`,
+            {
+              method: "PUT",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(formData),
+            }
+          );
+
+          if (!response.ok) {
+            alert("Erro do back-end" + response.status);
+            return;
+          }
+
+          let data = await response.json();
+
+          alert("Sucesso: " + JSON.stringify(data));
+        } catch (error) {
+          alert("Erro na requisição: " + error.message);
+        }
+      }
+
+      async function getEmprestimoPorId(idEmprestimo) {
+        try {
+          let response = await fetch(
+            `http://localhost:8080/emprestimo/${idEmprestimo}`,
+            {
+              method: "GET",
+              headers: { "Content-Type": "application/json" },
+            }
+          );
+
+          if (!response.ok) {
+            alert("Erro do back-end" + response.status);
+            return;
+          }
+
+          let data = await response.json();
+
+          preencherFormEmprestimo(data);
+        } catch (error) {
+          alert("Erro na requisição: " + error.message);
+        }
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        getClientes();
+        getLivros();
+        paramUrl();
+        document
+          .getElementById("emprestimoForm")
+          .addEventListener("submit", putEmprestimo);
+      });
+    </script>
+  </body>
+</html>
